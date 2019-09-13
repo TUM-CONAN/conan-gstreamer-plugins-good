@@ -21,8 +21,8 @@ class GStreamerPluginsGoodConan(ConanFile):
         "vpx": [True, False],
         "multifile": [True, False],
         "v4l2": [True, False],
-        "v4l2-probe": [True, False],
-        "v4l2-libv4l2": [True, False],
+        "v4l2probe": [True, False],
+        "v4l2libv4l2": [True, False],
     }
 
     default_options = (
@@ -35,8 +35,8 @@ class GStreamerPluginsGoodConan(ConanFile):
         "vpx=True",
         "multifile=True",
         "v4l2=True",
-        "v4l2-probe=True",
-        "v4l2-libv4l2=True",
+        "v4l2probe=True",
+        "v4l2libv4l2=True",
     )
 
     def requirements(self):
@@ -63,8 +63,8 @@ class GStreamerPluginsGoodConan(ConanFile):
         args.append("-Dvpx=" + ("enabled" if self.options.vpx else "disabled"))
         args.append("-Dmultifile=" + ("enabled" if self.options.multifile else "disabled"))
         args.append("-Dv4l2=" + ("enabled" if self.options.v4l2 else "disabled"))
-        args.append("-Dv4l2-probe=" + ("enabled" if self.options.v4l2-probe else "disabled"))
-        args.append("-Dv4l2-libv4l2=" + ("enabled" if self.options.v4l2-libv4l2 else "disabled"))
+        args.append("-Dv4l2probe=" + ("enabled" if self.options.v4l2-probe else "disabled"))
+        args.append("-Dv4l2libv4l2=" + ("enabled" if self.options.v4l2-libv4l2 else "disabled"))
         meson = Meson(self)
         meson.configure(source_folder="gst-plugins-good-" + self.version , args=args, pkg_config_paths=os.environ["PKG_CONFIG_PATH"].split(":"))
         meson.build()
