@@ -3,7 +3,9 @@ from conans import ConanFile, Meson, tools
 
 class GStreamerPluginsGoodConan(ConanFile):
     name = "gstreamer-plugins-good"
-    version = tools.get_env("GIT_TAG", "1.16.0")
+    version = tools.get_env("GIT_TAG", "master")
+    gst_version = "master" if version == "master" else "[~%s]" % version
+    gst_channel = "testing" if version == "master" else "stable"
     url = "https://gitlab.com/aivero/public/conan/conan-" + name
     description = "Plug-ins is a set of plugins that we consider to have good quality code and correct functionality"
     license = "LGPL"
@@ -42,15 +44,19 @@ class GStreamerPluginsGoodConan(ConanFile):
         self.requires("env-generator/[>=1.0.0]@%s/stable" % self.user)
         self.requires("glib/[>=2.62.0]@%s/stable" % self.user)
         self.requires(
-            "gstreamer-plugins-base/[~%s]@%s/stable" % (self.version, self.user)
+            "gstreamer-plugins-base/[~%s]@%s/%s" % (self.gst_version, self.user, self.gst_channel)
         )
         self.requires("libpng/[>=1.6.37]@%s/stable" % self.user)
         if self.options.vpx:
             self.requires("libvpx/[>=1.8.0]@%s/stable" % self.user)
 
     def source(self):
+        # TODO: Upon 1.18 release of GStreamer simplify this.
         git = tools.Git(folder="gst-plugins-good-" + self.version)
-        git.clone("https://gitlab.freedesktop.org/thaytan/gst-plugins-good", "splitmuxsink-muxerpad-map-1.16.0")
+        if self.gst_version == "master":
+            git.clone("https://gitlab.freedesktop.org/gstreamer/gst-plugins-good.git", "master", shallow=True)
+        else:
+            git.clone("https://gitlab.freedesktop.org/gstreamer/gst-plugins-good.git", "451fc5c1126f98dcd14de357f87bff84f1d8427e", shallow=True)
 
     def build(self):
         args = ["--auto-features=disabled"]
